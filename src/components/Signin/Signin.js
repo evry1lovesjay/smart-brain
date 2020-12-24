@@ -1,4 +1,5 @@
 import React from 'react';
+import  axios  from 'axios';
 
 class Signin extends React.Component {
   constructor(props) {
@@ -17,22 +18,41 @@ class Signin extends React.Component {
     this.setState({signInPassword: event.target.value})
   }
 
-  onSubmitSignIn = () => {
-    fetch('http://localhost:3000/signin', {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        email: this.state.signInEmail,
-        password: this.state.signInPassword
-      })
-    })
-      .then(response => response.json())
-      .then(user => {
-        if (user.id) {
-          this.props.loadUser(user)
-          this.props.onRouteChange('home');
-        }
-      })
+  // onSubmitSignIn = () => {
+  //   fetch('http://localhost:3000/signin', {
+  //     method: 'post',
+  //     headers: {'Content-Type': 'application/json'},
+  //     body: JSON.stringify({
+  //       email: this.state.signInEmail,
+  //       password: this.state.signInPassword
+  //     })
+  //   })
+  //     .then(response => response.json())
+  //     .then(user => {
+  //       if (user.id) {
+  //         this.props.loadUser(user)
+  //         this.props.onRouteChange('home');
+  //       }
+  //     })
+  // }
+
+  onSubmitSignIn = async () => {
+  
+    const obj = {
+      email: this.state.signInEmail,
+      password: this.state.signInPassword,
+    };
+
+    try {
+      const {data: user} = await axios.post ('http://localhost:3000/signin', obj)
+      if (user.id) {
+        this.props.loadUser(user)
+        this.props.onRouteChange('home');
+      }
+    } catch (error) {
+     alert("Something failed!!!") 
+    }
+   
   }
 
   render() {
